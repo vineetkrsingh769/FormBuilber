@@ -1,0 +1,62 @@
+.sortable-ghost {
+    opacity: 0.35;
+    background: #eef2ff;
+    border: 2px dashed #a5b4fc !important;
+    border-radius: 1rem;
+}
+
+.sortable-chosen {
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+    transform: scale(1.02);
+}
+
+.sortable-drag {
+    opacity: 0.95;
+    cursor: grabbing !important;
+}
+
+.field-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field-card:hover {
+    transform: translateY(-1px);
+}
+
+.saved-form-preview {
+    max-height: 280px;
+    overflow: hidden;
+}
+
+.saved-form-preview label {
+    font-size: 0.65rem;
+}
+
+.saved-form-preview input,
+.saved-form-preview textarea,
+.saved-form-preview select {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.saved-form-preview h3 {
+    font-size: 0.75rem;
+}
+
+.appearance-panel {
+    contain: layout style;
+}
+
+.appearance-field-slot {
+    overflow: hidden;
+    max-height: 120px;
+    opacity: 1;
+    transition: max-height 0.2s ease, opacity 0.15s ease;
+}
+
+.appearance-field-slot--hidden {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    pointer-events: none;
+}
