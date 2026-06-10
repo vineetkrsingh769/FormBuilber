@@ -14,7 +14,7 @@
     x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-slate-900/70 p-4 backdrop-blur-md"
+    class="modal-overlay flex items-center justify-center overflow-y-auto bg-slate-900/70 p-4 backdrop-blur-md"
     @keydown.escape.window="{{ $close }}()"
     role="dialog"
     aria-modal="true"

@@ -1,6 +1,0 @@
-# Render Static Site — https://render.com/docs/static-sites
-# PHP is not available on static builds; use npm only, then serve ./public
-staticSites:
-  - name: formbuilder
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./public

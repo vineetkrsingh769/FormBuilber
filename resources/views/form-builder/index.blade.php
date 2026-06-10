@@ -14,7 +14,6 @@
     </div>
 
     @include('form-builder.partials.editor-footer')
-
     @include('form-builder.partials.preview-modal')
     @include('form-builder.partials.schema-dialog')
     @include('form-builder.partials.toast')

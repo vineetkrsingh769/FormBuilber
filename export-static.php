@@ -12,21 +12,15 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-// Vite dev server marker forces @vite to emit HMR URLs — remove before static export
-$hotFile = __DIR__.'/public/hot';
-if (is_file($hotFile)) {
-    unlink($hotFile);
-}
-
 try {
     // Render the form-builder.index Blade view
     $html = view('form-builder.index')->render();
 
     // Replace absolute URLs with relative paths for static build compatibility
-    foreach (['http://localhost:5173', 'http://127.0.0.1:5173', 'http://127.0.0.1:8000', 'http://localhost:8000'] as $origin) {
-        $html = str_replace("{$origin}/", '', $html);
-        $html = str_replace($origin, '', $html);
-    }
+    $html = str_replace('http://localhost:5173/', '', $html);
+    $html = str_replace('http://localhost:5173', '', $html);
+    $html = str_replace('http://127.0.0.1:8000/', '', $html);
+    $html = str_replace('http://127.0.0.1:8000', '', $html);
 
     // Save the output HTML
     file_put_contents(__DIR__.'/public/index.html', $html);
