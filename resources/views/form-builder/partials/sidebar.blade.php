@@ -1,7 +1,9 @@
 <aside class="hidden h-full w-64 shrink-0 flex-col border-r border-violet-900/20 bg-violet-700 lg:flex">
     <div class="border-b border-white/30 px-5 py-5">
         <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-sm font-black text-violet-700 shadow-lg shadow-violet-950/30">FB</div>
+            <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg shadow-violet-950/30">
+                <img src="{{ asset('logo.png') }}" alt="FormCraft Logo" class="h-full w-full object-cover" />
+            </div>
             <div>
                 <p class="text-sm font-bold text-white">FormCraft</p>
                 <p class="text-[10px] font-medium text-violet-200">Drag & Drop Builder</p>

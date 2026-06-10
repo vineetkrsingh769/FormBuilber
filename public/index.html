@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="">
     <title>Form Builder</title>
     <style>[x-cloak] { display: none !important; }</style>
+    <link rel="icon" type="image/png" href="logo.png">
     <link rel="preload" as="style" href="build/assets/app-C555YvLA.css" /><link rel="modulepreload" as="script" href="build/assets/app-D-XYzBiz.js" /><link rel="stylesheet" href="build/assets/app-C555YvLA.css" /><script type="module" src="build/assets/app-D-XYzBiz.js"></script></head>
 <body class="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 text-slate-900 antialiased">
     <div x-data="formBuilder" x-init="init()" x-cloak class="flex h-screen overflow-hidden">
@@ -286,7 +287,9 @@
     <aside class="hidden h-full w-64 shrink-0 flex-col border-r border-violet-900/20 bg-violet-700 lg:flex">
     <div class="border-b border-white/30 px-5 py-5">
         <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-sm font-black text-violet-700 shadow-lg shadow-violet-950/30">FB</div>
+            <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg shadow-violet-950/30">
+                <img src="logo.png" alt="FormCraft Logo" class="h-full w-full object-cover" />
+            </div>
             <div>
                 <p class="text-sm font-bold text-white">FormCraft</p>
                 <p class="text-[10px] font-medium text-violet-200">Drag & Drop Builder</p>
