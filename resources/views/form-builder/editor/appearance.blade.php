@@ -37,20 +37,17 @@
             <div class="mt-3 rounded-lg border border-slate-200 bg-white p-2.5">
                 <div class="flex items-center gap-3">
                     <label class="relative flex h-9 w-9 shrink-0 cursor-pointer overflow-hidden rounded-full shadow-md ring-1 ring-slate-200 transition-shadow"
-                        :class="settings.theme === 'custom' ? 'ring-2 ring-indigo-400 ring-offset-2' : ''"
+                        :class="isCustomTheme() ? 'ring-2 ring-indigo-400 ring-offset-2' : ''"
                         :style="currentTheme.swatchStyle || ''">
                         <input type="color"
                             class="absolute inset-0 h-full w-full cursor-pointer border-0 bg-transparent p-0 opacity-0"
-                            x-model="settings.customThemeColor" @input="onCustomColorInput()" title="Pick custom color" />
-                        <span class="pointer-events-none absolute inset-0 rounded-full" :style="currentTheme.swatchStyle || `background: ${settings.customThemeColor}`"></span>
+                            :value="customThemePickerValue" @input="onCustomColorInput($event)" title="Pick custom color" />
+                        <span class="pointer-events-none absolute inset-0 rounded-full" :style="currentTheme.swatchStyle || (isCustomTheme() ? `background: ${settings.theme}` : '')"></span>
                     </label>
                     <div class="min-w-0 flex-1">
                         <p class="text-xs font-semibold text-slate-700">Custom color</p>
-                        <p class="truncate text-[10px] font-mono uppercase text-slate-400" x-text="settings.customThemeColor"></p>
+                        <p class="truncate text-[10px] font-mono uppercase text-slate-400" x-text="isCustomTheme() ? settings.theme : 'Select a color'"></p>
                     </div>
-                    <button type="button" @click="setTheme('custom')"
-                        :class="settings.theme === 'custom' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500'"
-                        class="shrink-0 rounded-lg px-2 py-1 text-[10px] font-bold transition-colors">Apply</button>
                 </div>
             </div>
         </div>
@@ -120,27 +117,6 @@
         <div class="appearance-field-slot" :class="settings.showSuccessMessage ? '' : 'appearance-field-slot--hidden'">
             <x-form-fields.label>Success message</x-form-fields.label>
             <x-form-fields.input type="text" x-model="settings.successMessage" @input="onSettingsChange()" />
-        </div>
-    </section>
-
-    {{-- Live mini preview --}}
-    <section class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Preview</p>
-        <div class="mt-3 rounded-lg border border-slate-100 bg-slate-50 p-3">
-            <p :class="settings.showFormTitle ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'" class="text-sm font-bold text-slate-800 transition-opacity duration-150" x-text="formTitle || 'Form Title'"></p>
-            <p :class="settings.showDescription && settings.description ? 'opacity-100 mt-1' : 'opacity-0 h-0 overflow-hidden'" class="text-xs text-slate-500 transition-opacity duration-150" x-text="settings.description"></p>
-            <div class="mt-3 space-y-1.5">
-                <div class="h-7 rounded-md border border-slate-200 bg-white"></div>
-                <div class="h-7 rounded-md border border-slate-200 bg-white transition-opacity duration-150" :class="settings.gridColumns >= 2 ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'"></div>
-            </div>
-            <div class="mt-3 flex gap-2 transition-opacity duration-150" :class="settings.showSubmitButton || settings.showResetButton ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'">
-                <span x-show="settings.showSubmitButton"
-                    class="flex-1 rounded-lg py-1.5 text-center text-[10px] font-bold text-white" :class="currentTheme.class" :style="currentTheme.style ?? ''"
-                    x-text="settings.submitLabel"></span>
-                <span x-show="settings.showResetButton"
-                    class="rounded-lg border border-slate-200 px-2 py-1.5 text-[10px] font-semibold text-slate-600"
-                    x-text="settings.resetLabel"></span>
-            </div>
         </div>
     </section>
 

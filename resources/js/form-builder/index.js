@@ -12,11 +12,14 @@ import {
     WIDTHS,
 } from './constants';
 import {
+    buildFormSchema,
     createField,
     cloneField,
     snapshot,
     formRecord,
     formatDate,
+    isHexTheme,
+    normalizeHexColor,
     normalizeSettings,
     resolveFormWidth,
     resolveTheme,
@@ -38,6 +41,8 @@ export function formBuilder() {
         isDragging: false,
         isDragOver: false,
         previewMode: false,
+        schemaDialogOpen: false,
+        schemaDialogJson: '',
         previewValues: {},
         previewSubmitted: false,
         deleteConfirmId: null,
@@ -171,12 +176,20 @@ export function formBuilder() {
             this.onSettingsToggle();
         },
 
-        onCustomColorInput() {
-            this.settings.theme = 'custom';
-            this.settings.customThemeColor = normalizeSettings({
-                ...this.settings,
-                customThemeColor: this.settings.customThemeColor,
-            }).customThemeColor;
+        isCustomTheme() {
+            return isHexTheme(this.settings.theme);
+        },
+
+        get customThemePickerValue() {
+            return isHexTheme(this.settings.theme)
+                ? this.settings.theme
+                : normalizeHexColor(this.settings.theme) ?? '#6366f1';
+        },
+
+        onCustomColorInput(event) {
+            const hex = normalizeHexColor(event?.target?.value);
+            if (!hex) return;
+            this.settings.theme = hex;
             this.onSettingsChange();
         },
 
@@ -207,13 +220,12 @@ export function formBuilder() {
         },
 
         get schema() {
-            return {
+            return buildFormSchema({
                 title: this.formTitle,
                 settings: this.settings,
-                fields: this.fields.map(({ id, type, label, placeholder, required, cssClass, defaultValue, minChars, maxChars, options, colSpan }) => ({
-                    id, type, label, placeholder, required, cssClass, defaultValue, minChars, maxChars, options, colSpan,
-                })),
-            };
+                fields: this.fields,
+                formId: this.currentFormId,
+            });
         },
 
         getFieldGridStyle(field) {
@@ -543,6 +555,25 @@ export function formBuilder() {
             const json = JSON.stringify(this.schema, null, 2);
             navigator.clipboard?.writeText(json);
             console.log('Exported:', this.schema);
+            this.showToast('JSON copied to clipboard');
+        },
+
+        handleNext() {
+            this.schemaDialogJson = JSON.stringify(this.schema, null, 2);
+            console.log('Form schema:', this.schema);
+            this.schemaDialogOpen = true;
+            document.body.style.overflow = 'hidden';
+        },
+
+        closeSchemaDialog() {
+            this.schemaDialogOpen = false;
+            if (!this.previewMode) {
+                document.body.style.overflow = '';
+            }
+        },
+
+        copySchemaJson() {
+            navigator.clipboard?.writeText(this.schemaDialogJson);
             this.showToast('JSON copied to clipboard');
         },
 

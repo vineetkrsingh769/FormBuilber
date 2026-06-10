@@ -1,4 +1,9 @@
-import { DEFAULT_LABELS, DEFAULT_SETTINGS, FULL_WIDTH_TYPES, THEMES } from './constants';
+import { DEFAULT_CUSTOM_HEX, DEFAULT_LABELS, DEFAULT_SETTINGS, FULL_WIDTH_TYPES, THEMES } from './constants';
+
+const FIELD_OPTION_TYPES = ['dropdown', 'radio', 'checkbox'];
+const FIELD_PLACEHOLDER_TYPES = ['text', 'textarea', 'number', 'email', 'phone', 'city'];
+const FIELD_MINMAX_TYPES = ['text', 'textarea'];
+const FIELD_DEFAULT_TYPES = ['text', 'number', 'email', 'hidden'];
 
 export function normalizeHexColor(hex) {
     if (!hex || typeof hex !== 'string') return null;
@@ -11,9 +16,13 @@ export function normalizeHexColor(hex) {
     return value.toLowerCase();
 }
 
+export function isHexTheme(theme) {
+    return normalizeHexColor(theme) !== null;
+}
+
 export function darkenHex(hex, amount = 0.14) {
     const normalized = normalizeHexColor(hex);
-    if (!normalized) return DEFAULT_SETTINGS.customThemeColor;
+    if (!normalized) return DEFAULT_CUSTOM_HEX;
     const channel = (start) => parseInt(normalized.slice(start, start + 2), 16);
     const dim = (c) => Math.max(0, Math.min(255, Math.round(c * (1 - amount))));
     const r = dim(channel(1));
@@ -28,11 +37,15 @@ export function normalizeSettings(raw = {}) {
     settings.customFormWidth = Number.isFinite(px)
         ? Math.min(Math.max(Math.round(px), 320), 1600)
         : DEFAULT_SETTINGS.customFormWidth;
-    settings.customThemeColor = normalizeHexColor(settings.customThemeColor)
-        ?? DEFAULT_SETTINGS.customThemeColor;
-    if (settings.theme === 'custom' && !normalizeHexColor(raw.customThemeColor)) {
-        settings.theme = DEFAULT_SETTINGS.theme;
+
+    if (settings.theme === 'custom') {
+        settings.theme = normalizeHexColor(raw.customThemeColor) ?? DEFAULT_CUSTOM_HEX;
+    } else if (isHexTheme(settings.theme)) {
+        settings.theme = normalizeHexColor(settings.theme);
     }
+
+    delete settings.customThemeColor;
+
     return settings;
 }
 
@@ -41,7 +54,6 @@ const APPEARANCE_KEYS = [
     'showFormTitle',
     'showDescription',
     'theme',
-    'customThemeColor',
     'formWidth',
     'customFormWidth',
     'showSubmitButton',
@@ -64,15 +76,15 @@ export function resetAppearanceSettings(current = {}) {
 }
 
 export function resolveTheme(settings, themes = THEMES) {
-    if (settings.theme === 'custom') {
-        const color = settings.customThemeColor ?? DEFAULT_SETTINGS.customThemeColor;
-        const darker = darkenHex(color);
+    const hex = normalizeHexColor(settings.theme);
+    if (hex) {
+        const darker = darkenHex(hex);
         return {
             id: 'custom',
             label: 'Custom',
             class: '',
-            style: `background: linear-gradient(to right, ${color}, ${darker})`,
-            swatchStyle: `background: linear-gradient(to bottom right, ${color}, ${darker})`,
+            style: `background: linear-gradient(to right, ${hex}, ${darker})`,
+            swatchStyle: `background: linear-gradient(to bottom right, ${hex}, ${darker})`,
         };
     }
     const preset = themes.find((t) => t.id === settings.theme) ?? themes[0];
@@ -121,6 +133,96 @@ export function cloneField(field) {
         id: crypto.randomUUID(),
         label: `${field.label} (Copy)`,
     };
+}
+
+export function serializeSettingsForExport(raw = {}) {
+    const settings = normalizeSettings(raw);
+
+    const layout = {
+        gridColumns: settings.gridColumns,
+        formWidth: settings.formWidth,
+    };
+
+    if (settings.formWidth === 'custom') {
+        layout.customFormWidth = settings.customFormWidth;
+    }
+
+    return {
+        layout,
+        appearance: {
+            description: settings.description,
+            showFormTitle: settings.showFormTitle,
+            showDescription: settings.showDescription,
+            theme: settings.theme,
+        },
+        actions: {
+            showSubmitButton: settings.showSubmitButton,
+            submitLabel: settings.submitLabel,
+            showResetButton: settings.showResetButton,
+            resetLabel: settings.resetLabel,
+        },
+        submission: {
+            showSuccessMessage: settings.showSuccessMessage,
+            successMessage: settings.successMessage,
+        },
+    };
+}
+
+export function serializeFieldForExport(field, index = 0) {
+    const exported = {
+        order: index + 1,
+        id: field.id,
+        type: field.type,
+        label: field.label,
+        required: Boolean(field.required),
+        colSpan: field.colSpan ?? 1,
+    };
+
+    if (FIELD_PLACEHOLDER_TYPES.includes(field.type)) {
+        exported.placeholder = field.placeholder ?? '';
+    }
+
+    if (FIELD_OPTION_TYPES.includes(field.type)) {
+        exported.options = Array.isArray(field.options) ? [...field.options] : [];
+    }
+
+    if (FIELD_MINMAX_TYPES.includes(field.type)) {
+        if (field.minChars != null && field.minChars !== '') {
+            exported.minChars = Number(field.minChars);
+        }
+        if (field.maxChars != null && field.maxChars !== '') {
+            exported.maxChars = Number(field.maxChars);
+        }
+    }
+
+    if (FIELD_DEFAULT_TYPES.includes(field.type) && field.defaultValue) {
+        exported.defaultValue = field.defaultValue;
+    }
+
+    if (field.cssClass) {
+        exported.cssClass = field.cssClass;
+    }
+
+    return exported;
+}
+
+export function buildFormSchema({ title, settings, fields, formId = null }) {
+    const schema = {
+        title: title?.trim() || 'Untitled Form',
+        settings: serializeSettingsForExport(settings),
+        fields: fields.map((field, index) => serializeFieldForExport(field, index)),
+        meta: {
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            fieldCount: fields.length,
+        },
+    };
+
+    if (formId) {
+        schema.meta.formId = formId;
+    }
+
+    return schema;
 }
 
 export function snapshot(state) {

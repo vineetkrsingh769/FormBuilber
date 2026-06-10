@@ -1,4 +1,6 @@
-<div x-show="activeTab === 'editor' && editorActive" x-cloak class="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+<div x-show="activeTab === 'editor' && editorActive" x-cloak
+    :class="settings.templateSelected ? 'editor-with-footer' : ''"
+    class="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
     <div class="flex min-h-0 flex-1 flex-col overflow-hidden p-4 lg:p-6 lg:pr-3">
         @include('form-builder.editor.template-picker')
 

@@ -1,5 +1,5 @@
 <div x-show="previewMode" x-cloak x-transition.opacity
-    class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/70 p-4 backdrop-blur-md sm:p-8"
+    class="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-slate-900/70 p-4 backdrop-blur-md sm:p-8"
     @keydown.escape.window="closePreview()">
     <div @click.outside="closePreview()" class="relative my-4 w-full rounded-3xl bg-white shadow-2xl" :class="activePreviewWidth.class" :style="activePreviewWidth.style ?? ''">
         <div class="sticky top-0 z-10 flex items-center justify-between rounded-t-3xl border-b border-slate-100 bg-white/95 px-6 py-4 backdrop-blur-md">

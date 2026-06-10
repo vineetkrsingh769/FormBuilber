@@ -76,9 +76,8 @@ export const DEFAULT_SETTINGS = {
     description: '',
     showFormTitle: true,
     showDescription: true,
-    // Theme
+    // Theme — preset id (e.g. "indigo") or hex (e.g. "#6366f1")
     theme: 'indigo',
-    customThemeColor: '#6366f1',
     // Action buttons
     showSubmitButton: true,
     submitLabel: 'Submit Form',
@@ -99,6 +98,8 @@ export const GRID_TEMPLATES = [
     { cols: 2, label: 'Two Columns', desc: 'Side-by-side fields, great for compact forms', preview: ['████████', '████████'] },
     { cols: 3, label: 'Three Columns', desc: 'Multi-column grid for dense layouts', preview: ['██████', '██████', '██████'] },
 ];
+
+export const DEFAULT_CUSTOM_HEX = '#6366f1';
 
 export const THEMES = [
     { id: 'indigo', label: 'Indigo', class: 'from-indigo-600 to-violet-600' },
