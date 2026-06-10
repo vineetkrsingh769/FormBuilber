@@ -4,6 +4,7 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
+        "build:vercel": "vite build && node scripts/sync-static-assets.mjs",
         "dev": "concurrently -c \"#93c5fd,#c4b5fd\" -n \"laravel,vite\" \"php artisan serve\" \"vite\""
     },
     "devDependencies": {
