@@ -4,6 +4,7 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
+        "deploy:prepare": "vite build && php export-static.php",
         "dev": "concurrently -c \"#93c5fd,#c4b5fd\" -n \"laravel,vite\" \"php artisan serve\" \"vite\""
     },
     "devDependencies": {
